@@ -98,6 +98,11 @@ rabbitmqctl set_policy ha-fed \
   --priority 1 \
   --apply-to queues
 ```
+##Conclusion
+By following this setup, you can ensure a resilient RabbitMQ cluster with EFS, providing data consistency and high availability across Kubernetes-managed nodes.
+
+For any issues or contributions, feel free to open an issue or pull request.
+Happy learning!
 
 
 
