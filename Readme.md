@@ -40,4 +40,37 @@ This setup creates a RabbitMQ cluster with nodes backed by EFS. The RabbitMQ clu
 - **Create Erlang Cookie:**
   ```bash
   ERLANG_COOKIE=$(openssl rand -hex 16)
+  ```
+- Base64 encode it and create a Kubernetes secret.
+
+## Discovery Mechanism
+- Use the Kubernetes plugin for node discovery.
+- Pass configurations as a ConfigMap.
+
+### Enabled Plugins:
+- `rabbitmq_federation`: Sync messages across instances.
+- `rabbitmq_management`: Provides UI and dashboard.
+- `rabbitmq_peer_discovery_k8s`: Required for discovery.
+
+## Configuration and Deployment
+1. **Define Backend**: Use RabbitMQ discovery plugin.
+2. **API Server**: Specify the API server details.
+3. **Connection**: Nodes connect using hostnames.
+4. **Headless Service**: Use a headless service to resolve DNS directly to pod IPs, useful for stateful applications.
+
+## Deploy RabbitMQ Instances
+- Use StatefulSet for unique pod names and persistent storage.
+- Init Containers: Utilize a BusyBox init container to move configurations and plugins to appropriate folders.
+
+## EFS Provisioning
+- Annotate the service account with the IAM role ARN for dynamic provisioning.
+- Ensure Erlang cookies are replicated across nodes.
+
+## RabbitMQ Management Portal
+To access the RabbitMQ management portal, use the following command:
+```bash
+kubectl port-forward rabbitmq-0 -n rabbits 8080:15672
+```
+
+
 
