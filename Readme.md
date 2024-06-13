@@ -71,6 +71,35 @@ To access the RabbitMQ management portal, use the following command:
 ```bash
 kubectl port-forward rabbitmq-0 -n rabbits 8080:15672
 ```
+## Deploy Publisher
+
+1. Use the following command to forward the port for the RabbitMQ publisher pod:
+    ```bash
+    kubectl port-forward pod/rabbitmq-publisher-<pod_id> 5672:80 -n default
+    ```
+
+2. Test the setup using Postman:
+    - URL: 
+      ```
+      http://localhost:5672/publish/hello
+      ```
+
+## Mirroring Queues
+
+To ensure high availability, it is important to mirror queues across all RabbitMQ nodes. This ensures message persistence even if one or more nodes go down.
+
+### Set Policy for Mirroring
+
+Execute the following command to set the policy for mirroring queues:
+
+```bash
+rabbitmqctl set_policy ha-fed \
+  ".*" '{"federation-upstream-set":"all", "ha-sync-mode":"automatic", "ha-mode":"nodes", "ha-params":["rabbit@rabbitmq-0.rabbitmq.rabbits.svc.cluster.local","rabbit@rabbitmq-1.rabbitmq.rabbits.svc.cluster.local","rabbit@rabbitmq-2.rabbitmq.rabbits.svc.cluster.local"]}' \
+  --priority 1 \
+  --apply-to queues
+```
+
+
 
 
 
