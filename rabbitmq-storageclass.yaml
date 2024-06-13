@@ -1,0 +1,10 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rabbitmq-efs-storageclass
+provisioner: efs.csi.aws.com
+reclaimPolicy: Delete  
+parameters:
+  provisioningMode: efs-ap
+  fileSystemId: <file_system_id> # Replace with your EFS file system ID (Dont forget to choose EKS VPC while creating EFS)
+  directoryPerms: "700"
